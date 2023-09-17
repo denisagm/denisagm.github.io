@@ -1,13 +1,72 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const short = require('short-uuid');
+const { Server } = require("socket.io");
 require('dotenv').config()
-const io = require("socket.io")(http, {
-    cors: {
-      origin: process.env.ORIGIN || 'http://localhost:8081',
-      methods: ["GET", "POST"]
+
+const io = new Server(http, {
+  cors: {
+    origin: process.env.ORIGIN || 'http://localhost:8080',
+    methods: ["GET", "POST"]
+  },
+});
+
+let players = [];
+
+io.on('connection', (socket) => {
+  console.log('A user connected', socket.id);
+  let roomId = socket.handshake.query['roomId'];
+  if (!roomId) {
+    roomId = short.generate();
+    socket.emit('room', roomId);
+  }
+  socket.join(roomId);
+
+  players.push({id: socket.id, name: socket.id, roomId: roomId});
+  socket.on('name', (name) => {
+    let player = players.find(p => p.id == socket.id);
+    console.log(`User entered name ${name}`);
+    if (player) {
+      console.log(`Changing name from ${player.name} to ${name}`)
+      player.name = name;
     }
+    updateClientsInRoom(roomId);
   });
+
+  socket.on('vote', (vote) => {
+    let player = players.find(p => p.id == socket.id);
+    if (player) {
+      player.vote = vote;
+    }
+    console.log(`Player ${player.name} voted ${player.vote}`);
+
+    const playersInRoom = players.filter(p => p.roomId == roomId);
+    if (playersInRoom.every(p => p.vote)) {
+      io.to(roomId).emit('show');
+    }
+    updateClientsInRoom(roomId);
+  });
+
+  socket.on('show', () => {
+    io.to(roomId).emit('show');
+  });
+
+  socket.on('restart', () => {
+    restartGame(roomId);
+  });
+
+  socket.on('disconnect', (reason) => {
+    const player = players.find(player => player.id === socket.id);
+    console.log(`Player ${player.name} has disconnected because reason:`, reason);
+    players = players.filter(player => player.id !== socket.id);
+    updateClientsInRoom(roomId);
+   });
+
+  // keeping the connection alive
+  socket.on('pong', () => {
+   // let player = players.find(p => p.id == socket.id);
+  });
+});
 
 // keeping the connection alive
 setInterval(() => {
@@ -21,67 +80,7 @@ app.get('/', (req, res) => {
 
 console.log(process.env.ORIGIN);
 http.listen(process.env.PORT || 3000, () => {
-  console.log('listening on *:3000');
-});
-
-
-let players = [];
-
-io.on('connection', (socket) => {
-    console.log('A user connected', socket.id);
-    let roomId = socket.handshake.query['roomId'];
-    if (!roomId) {
-      roomId = short.generate();
-      socket.emit('room', roomId);
-    }
-    socket.join(roomId);
-
-    players.push({id: socket.id, name: '', roomId: roomId});
-    socket.on('name', (name) => {
-      let player = players.find(p => p.id == socket.id);
-      console.log(`User entered name ${name}`);
-      if (player) {
-        console.log(`Changing name from ${player.name} to ${name}`)
-        player.name = name;
-      }
-      updateClientsInRoom(roomId);
-    });
-
-    socket.on('vote', (vote) => {
-      let player = players.find(p => p.id == socket.id);
-      if (player) {
-        player.vote = vote;
-      }
-      console.log(`Player ${player.name} voted ${player.vote}`);
-
-      const playersInRoom = players.filter(p => p.roomId == roomId);
-      if (playersInRoom.every(p => p.vote)) {
-        io.to(roomId).emit('show');
-      }
-      updateClientsInRoom(roomId);
-    });
-
-    socket.on('show', () => {
-      io.to(roomId).emit('show');
-    });
-
-    socket.on('restart', () => {
-      restartGame(roomId);
-    });
-
-    socket.on('disconnect', () => {
-      const player = players.find(player => player.id === socket.id);
-      console.log(`Player ${player.name} has disconnected`);
-      players = players.filter(player => player.id !== socket.id);
-      updateClientsInRoom(roomId);
-     });
-
-
-     // keeping the connection alive
-     socket.on('pong', () => {
-      let player = players.find(p => p.id == socket.id);
-     })
-
+  console.log(`listening on *:${process.env.PORT || 3000}`);
 });
 
 function updateClientsInRoom(roomId) {
@@ -100,12 +99,10 @@ function restartGame(roomId) {
 function logRooms() {
   const rooms = players.map(e => e.roomId);
   if (rooms) {
-    for (const room of rooms.filter((val, i, arr) => arr.indexOf(val) == i)) {
-      const playersInRoom = players.filter(p => p.roomId == room).map(p => p.name);
+    const filteredRooms = rooms.filter((val, i, arr) => arr.indexOf(val) == i);
+    for (const room of filteredRooms) {
+      const playersInRoom = players.filter(p => p.roomId == room).map(p => p.name || p.id);
       console.log(`Room: ${room} - Players: ${playersInRoom.join(", ")}`);
     }
   }
 }
-
-
-

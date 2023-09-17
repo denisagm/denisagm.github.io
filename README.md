@@ -1,23 +1,23 @@
 <h1 align="center">
- <a href="https://planfree.dev">planfree.dev</a>
+ <a href="https://denisagm.github.io">denisagm.github.io</a>
   <br>
 </h1>
 
 <h4 align="center">A completely free implementation of planning poker</h4>
 
-Try it out with your team, it's currently live at [planfree.dev](https://www.planfree.dev/#/). If you find any issues, or wish to contribute, take a look at the [issues list](https://github.com/LukeGarrigan/planfree.dev/issues). If you have any ideas don't hesitate to create a new issue!
+Try it out with your team, it's currently live at [denisagm.github.io](https://denisagm.github.io/#/). If you find any issues, or wish to contribute, take a look at the [issues list](https://github.com/denisagm/denisagm.github.io/issues). If you have any ideas don't hesitate to create a new issue!
 <p align="center">
-  <a href="https://img.shields.io/github/license/lukegarrigan/p5js-chess">
-    <img src="https://img.shields.io/github/license/lukegarrigan/p5js-chess" />
+  <a href="https://img.shields.io/github/license/denisagm/denisagm.github.io">
+    <img src="https://img.shields.io/github/license/denisagm/denisagm.github.io" />
   </a>
    <a href="https://app.netlify.com/sites/blissful-bardeen-521053/deploys">
       <img src="https://img.shields.io/netlify/03077de6-f8e4-49e6-a8fc-2e460f60d98b">
   </a>
-  <a href="https://GitHub.com/LukeGarrigan/planfree.dev/issues/">
-      <img src="https://img.shields.io/github/issues/LukeGarrigan/planfree.dev.svg">
+  <a href="https://GitHub.com/denisagm/denisagm.github.io/issues/">
+      <img src="https://img.shields.io/github/issues/denisagm/denisagm.github.io.svg">
   </a>
-  <a href="https://dl.circleci.com/status-badge/redirect/gh/LukeGarrigan/planfree.dev/tree/main">
-      <img src="https://dl.circleci.com/status-badge/img/gh/LukeGarrigan/planfree.dev/tree/main.svg?style=svg">
+  <a href="https://dl.circleci.com/status-badge/redirect/gh/denisagm/denisagm.github.io/tree/main">
+      <img src="https://dl.circleci.com/status-badge/img/gh/denisagm/denisagm.github.io/tree/main.svg?style=svg">
   </a>
 </p>
 
@@ -38,6 +38,6 @@ cd client/
 npm install
 npm run serve 
 ```
-Navigate to http://localhost:8082/ 
+Navigate to http://localhost:8080/ 
 
 

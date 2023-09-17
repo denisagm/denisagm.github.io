@@ -3,31 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env VUE_APP_SERVER=https://scrum-estimates.fly.dev vue-cli-service build",
+    "deploy:old": "npm run build && rimraf ../css ../icons ../js ../service-worker.js && cpy dist/**/* ../ && git add ..",
+    "deploy:commit": "sh deploy.sh",
+    "lint": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint"
   },
   "dependencies": {
     "@types/socket.io": "^3.0.2",
-    "@vue/compat": "^3.2.36",
+    "@vue/compat": "^3.3.4",
     "core-js": "^3.25.0",
-    "socket.io-client": "^4.5.1",
-    "vue": "^3.2.36",
-    "vue-router": "^4.0.14",
-    "vuex": "4.0.2"
+    "socket.io-client": "^4.7.2",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
+    "vuex": "4.1.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.2.36",
+    "@vue/cli-plugin-babel": "~4.5.19",
+    "@vue/cli-plugin-router": "~4.5.19",
+    "@vue/cli-plugin-typescript": "~4.5.19",
+    "@vue/cli-plugin-vuex": "~4.5.19",
+    "@vue/cli-service": "~4.5.19",
+    "@vue/compiler-sfc": "^3.3.4",
     "@vue/eslint-config-typescript": "^5.0.2",
-    "node-sass": "^4.12.0",
+    "cpy-cli": "^5.0.0",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.1",
+    "sass": "^1.67.0",
     "sass-loader": "^8.0.2",
-    "typescript": "~3.9.3"
+    "typescript": "^4.9.5"
   }
 }

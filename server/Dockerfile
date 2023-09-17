@@ -2,9 +2,9 @@
 # Linux x64
 FROM node:current-alpine
 
-LABEL org.opencontainers.image.title="Planfree.dev Server" \
-      org.opencontainers.image.description="The backend of planfree.dev" \
-      org.opencontainers.image.authors="@LukeGarrigan"
+LABEL org.opencontainers.image.title="scrum-estimates Server" \
+      org.opencontainers.image.description="The backend of scrum-estimates" \
+      org.opencontainers.image.authors="@DenisaGM"
 
 # Create directory in container image for app code
 RUN mkdir -p /usr/src/app

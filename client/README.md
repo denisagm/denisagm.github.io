@@ -15,6 +15,11 @@ npm run serve
 npm run build
 ```
 
+### Compiles and minifies for production & commits and pushes to GitHub
+```
+npm run deploy:commit
+```
+
 ### Lints and fixes files
 ```
 npm run lint

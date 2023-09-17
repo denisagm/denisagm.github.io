@@ -167,7 +167,9 @@ function installPWA() {
 onMounted(() => {
   if (joiningAGame()) {
     const route = useRoute();
-    const socket = io(process.env.VUE_APP_SERVER, {
+    const socket = io(process.env.VUE_APP_SERVER || 'http://localhost:3000', {
+      transports: ['websocket'],
+      rememberUpgrade: true,
       query: {
         roomId: route.params.id,
       },
@@ -179,6 +181,12 @@ onMounted(() => {
   if (storedName) {
     enteredName(storedName);
   }
+
+  // keeping the connection alive
+  // setInterval(() => {
+  //   console.log('emit ping');
+  //   store.state.socket.emit('ping');
+  // }, 10000);
 
   setupSocketHandlers();
 });
@@ -273,7 +281,7 @@ function getMode(): string {
 }
 
 function goToGithub() {
-  open("https://github.com/LukeGarrigan/planfree.dev");
+  open("https://github.com/denisagm/denisagm.github.io");
 }
 
 function joiningAGame() {
@@ -286,6 +294,13 @@ function joiningAGame() {
 }
 
 function setupSocketHandlers() {
+  store.state.socket.on("connect", () => {
+    const storedName = localStorage.getItem("name");
+    if (storedName) {
+      enteredName(storedName);
+    }
+  });
+
   store.state.socket.on("update", (players: Player[]) => {
     store.state.players = players;
   });

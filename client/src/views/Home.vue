@@ -123,7 +123,7 @@ function startGame() {
       alert("If it's taking more than 5 seconds, my credits have probably ran out 😱 apologies.");
     }
   }, 5000);
-  const socket = io(process.env.VUE_APP_SERVER);
+  const socket = io(process.env.VUE_APP_SERVER || 'http://localhost:3000');
   store.commit("setSocket", socket);
   store.state.socket.on("room", (roomId: string) => {
     hasStarted.value = true;
