@@ -14,8 +14,8 @@ const io = new Server(http, {
 let players = [];
 
 io.on('connection', (socket) => {
-  console.log('A user connected', socket.id);
   let roomId = socket.handshake.query['roomId'];
+  console.log(`A user connected ${socket.id}${roomId ? ` to room: ${roomId}`: ''}`);
   if (!roomId) {
     roomId = short.generate();
     socket.emit('room', roomId);
@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
     const player = players.find(player => player.id === socket.id);
     console.log(`Player ${player.name} has disconnected because reason:`, reason);
     players = players.filter(player => player.id !== socket.id);
+    // socket.leave(roomId); // keep user in room if he reconnects, right ?
     updateClientsInRoom(roomId);
    });
 
@@ -66,11 +67,16 @@ io.on('connection', (socket) => {
   socket.on('pong', () => {
    // let player = players.find(p => p.id == socket.id);
   });
+  socket.on('ping', (cb) => {
+    let player = players.find(p => p.id == socket.id);
+    console.log('received ping / emit pong', player.name);
+    socket.emit('pong');
+  });
 });
 
 // keeping the connection alive
 setInterval(() => {
-  io.emit('ping');
+  // io.emit('ping');
   logRooms();
 }, 8000);
 

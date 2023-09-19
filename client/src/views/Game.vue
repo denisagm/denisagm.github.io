@@ -167,6 +167,7 @@ function installPWA() {
 onMounted(() => {
   if (joiningAGame()) {
     const route = useRoute();
+    console.log('mounted - route.params:', route.params);
     const socket = io(process.env.VUE_APP_SERVER || 'http://localhost:3000', {
       transports: ['websocket'],
       rememberUpgrade: true,
@@ -296,16 +297,23 @@ function joiningAGame() {
 function setupSocketHandlers() {
   store.state.socket.on("connect", () => {
     const storedName = localStorage.getItem("name");
+    console.log('received connect');
     if (storedName) {
       enteredName(storedName);
     }
   });
 
+  store.state.socket.on("disconnect", (reason: string) => {
+    console.log('received disconnect because reason:', reason);
+  });
+
   store.state.socket.on("update", (players: Player[]) => {
+    console.log('received update - players:', players);
     store.state.players = players;
   });
 
   store.state.socket.on("show", () => {
+    console.log('received show');
     showVotes.value = true;
     clearInterval(interval.value);
     countdown.value = 3;
@@ -318,11 +326,13 @@ function setupSocketHandlers() {
   });
 
   store.state.socket.on("restart", () => {
+    console.log('received restart');
     showVotes.value = false;
     currentVote.value = null;
   });
 
   store.state.socket.on("ping", () => {
+    console.log('received ping / emit pong');
     store.state.socket.emit("pong");
   });
 }

@@ -126,6 +126,7 @@ function startGame() {
   const socket = io(process.env.VUE_APP_SERVER || 'http://localhost:3000');
   store.commit("setSocket", socket);
   store.state.socket.on("room", (roomId: string) => {
+    console.log('received room - id:', roomId);
     hasStarted.value = true;
     router.push({ path: `/game/${roomId}` });
   });
